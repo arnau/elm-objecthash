@@ -30,6 +30,7 @@ import Crypton.SHA.Alg exposing (Alg(..))
 import Dict exposing (Dict)
 import Objecthash.Tag as Tag exposing (Tag)
 import Objecthash.Value exposing (Value(..))
+import Set exposing (Set)
 import Word.Hex as Hex
 
 
@@ -159,7 +160,18 @@ list input =
 {-| -}
 set : List ByteList -> ByteList
 set input =
-    bag Tag.Set (List.sort input)
+    input
+        |> List.foldr collectUnique []
+        |> List.sort
+        |> bag Tag.Set
+
+
+collectUnique : ByteList -> List ByteList -> List ByteList
+collectUnique bytes acc =
+    if List.member bytes acc then
+        acc
+    else
+        bytes :: acc
 
 
 {-| -}
