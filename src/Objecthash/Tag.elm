@@ -1,5 +1,7 @@
 module Objecthash.Tag exposing (..)
 
+import Char exposing (fromCode)
+
 
 type Tag
     = Bool
@@ -14,27 +16,32 @@ type Tag
 
 toChar : Tag -> Char
 toChar tag =
+    fromCode (toByte tag)
+
+
+toByte : Tag -> Int
+toByte tag =
     case tag of
         Bool ->
-            'b'
+            0x62
 
         Dict ->
-            'd'
+            0x64
 
         Float ->
-            'f'
+            0x66
 
         Integer ->
-            'i'
+            0x69
 
         List ->
-            'l'
+            0x6C
 
         Null ->
-            'n'
+            0x6E
 
         Set ->
-            's'
+            0x73
 
         Unicode ->
-            'u'
+            0x75

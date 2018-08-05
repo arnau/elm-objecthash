@@ -26,25 +26,19 @@ suite =
         , describe "list"
             [ test "empty" <| \() -> testEmptyList
             , test "string" <| \() -> testStringLists
-
-            -- , test "number" <| \() -> testNumberLists
+            ]
+        , describe "set"
+            [ test "empty" <| \() -> testEmptySet
+            , test "mixed" <| \() -> testMixedSet
+            ]
+        , describe "dict"
+            [ test "empty" <| \() -> testEmptyDict
+            ]
+        , describe "float"
+            [ test "0.0" <| \() -> testFloat0
+            , test "other" <| \() -> testFloats
             ]
         ]
-
-
-
--- , describe "dict"
---     [ test "empty" <| \() -> testEmptyDict
---     , test "string" <| \() -> testStringDict
---     , test "list" <| \() -> testListDict
---     , test "order" <| \() -> testDictOrder
---     ]
--- , describe "set"
---     [ test "basic" <| \() -> testSet ]
--- , test "mix" <| \() -> testMix
--- , test "item" <| \() -> testItem
---     ]
--- ]
 
 
 testNull : Expectation
@@ -109,17 +103,34 @@ testInteger42 =
 
 
 
--- testFloats : Expectation
--- testFloats =
---     Expect.equal
---         [ objecthash (VNumber -0.1)
---         , objecthash (VNumber 1.2345)
---         , objecthash (VNumber -10.1234)
---         ]
---         [ "55ab03db6fbb5e6de473a612d7e462ca8fd2387266080980e87f021a5c7bde9f"
---         , "844e08b1195a93563db4e5d4faa59759ba0e0397caf065f3b6bc0825499754e0"
---         , "59b49ae24998519925833e3ff56727e5d4868aba4ecf4c53653638ebff53c366"
---         ]
+-- Float
+
+
+testFloat0 : Expectation
+testFloat0 =
+    Expect.equal
+        [ toHex <| float 0.0
+        , toHex <| float -0.0
+        ]
+        [ "60101d8c9cb988411468e38909571f357daa67bff5a7b0a3f9ae295cd4aba33d"
+        , "60101d8c9cb988411468e38909571f357daa67bff5a7b0a3f9ae295cd4aba33d"
+        ]
+
+
+testFloats : Expectation
+testFloats =
+    Expect.equal
+        [ toHex <| float -0.1
+        , toHex <| float 1.2345
+        , toHex <| float -10.1234
+        ]
+        [ "55ab03db6fbb5e6de473a612d7e462ca8fd2387266080980e87f021a5c7bde9f"
+        , "844e08b1195a93563db4e5d4faa59759ba0e0397caf065f3b6bc0825499754e0"
+        , "59b49ae24998519925833e3ff56727e5d4868aba4ecf4c53653638ebff53c366"
+        ]
+
+
+
 -- List
 
 
@@ -142,27 +153,42 @@ testStringLists =
 
 
 
--- testNumberLists : Expectation
--- testNumberLists =
---     Expect.equal
---         [ objecthash (VList [ VNumber 123 ])
---         , objecthash (VList [ VNumber 1, VNumber 2, VNumber 3 ])
---         , objecthash (VList [ VNumber 123456789012345 ])
---         ]
---         [ "2e72db006266ed9cdaa353aa22b9213e8a3c69c838349437c06896b1b34cee36"
---         , "925d474ac71f6e8cb35dd951d123944f7cabc5cda9a043cf38cd638cc0158db0"
---         , "f446de5475e2f24c0a2b0cd87350927f0a2870d1bb9cbaa794e789806e4c0836"
---         ]
--- testEmptyDict : Expectation
--- testEmptyDict =
---     Expect.equal (objecthash (VDict Dict.empty)) "18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4"
--- testStringDict : Expectation
--- testStringDict =
---     let
---         dict =
---             Dict.fromList [ ( "foo", VString "bar" ) ]
---     in
---     Expect.equal (objecthash (VDict dict)) "7ef5237c3027d6c58100afadf37796b3d351025cf28038280147d42fdc53b960"
+-- Set
+
+
+testEmptySet : Expectation
+testEmptySet =
+    Expect.equal
+        (toHex <| set [])
+        "043a718774c572bd8a25adbeb1bfcd5c0256ae11cecf9f9c3f925d0e52beaf89"
+
+
+testMixedSet : Expectation
+testMixedSet =
+    Expect.equal
+        (toHex <| set [ int 1, int 2, unicode "foo" ])
+        "7b0bde44f8fa6fb6e1f56f5290b1815766c16a06d70258dc3ad501b27f59741d"
+
+
+
+-- Dict
+
+
+testEmptyDict : Expectation
+testEmptyDict =
+    Expect.equal
+        (toHex <| dict (Dict.fromList []))
+        "18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4"
+
+
+testStringDict : Expectation
+testStringDict =
+    Expect.equal
+        (toHex <| dict (Dict.fromList [ ( "foo", unicode "bar" ) ]))
+        "7ef5237c3027d6c58100afadf37796b3d351025cf28038280147d42fdc53b960"
+
+
+
 -- testListDict : Expectation
 -- testListDict =
 --     let
@@ -252,11 +278,6 @@ testStringLists =
 --                 ]
 --         )
 --         "783a423b094307bcb28d005bc2f026ff44204442ef3513585e7e73b66e3c2213"
--- testSet : Expectation
--- testSet =
---     Expect.equal
---         (objecthash <| VSet [ VString "Briton", VString "British citizen" ])
---         "16897987a6ee59d9ffdb456ed02df34a79b05346498d4360172568101ae157c1"
 -- testItem : Expectation
 -- testItem =
 --     Expect.equal

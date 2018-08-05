@@ -2,17 +2,32 @@ module Objecthash.Hash exposing (..)
 
 {-| Functions to operate hashes.
 
-@docs objecthash, bytes, toHex
+
+# Types
 
 @docs ByteList
 
-@docs unicode, redacted, null, int
+
+# Convertors
+
+@docs bytes, toHex
+
+
+# Primitives
+
+@docs unicode, redacted, null, int, float, bool
+
+
+# Collection primitives
+
+@odcs list, set, dict
 
 -}
 
 import Crypto.Hash as Hash
 import Crypton.SHA as SHA
 import Crypton.SHA.Alg exposing (Alg(..))
+import Dict exposing (Dict)
 import Objecthash.Tag as Tag exposing (Tag)
 import Objecthash.Value exposing (Value(..))
 import Word.Hex as Hex
@@ -30,6 +45,50 @@ sha256 bytes =
         |> Hex.fromWordArray
 
 
+{-| -}
+toHex : ByteList -> String
+toHex bytes =
+    Hex.fromByteList bytes
+
+
+{-| -}
+bytes : Value -> ByteList
+bytes value =
+    case value of
+        VBool raw ->
+            bool raw
+
+        VDict raw ->
+            raw
+                |> Dict.map (\k v -> bytes v)
+                |> dict
+
+        VFloat raw ->
+            float raw
+
+        VInteger raw ->
+            int raw
+
+        VList raw ->
+            list (List.map bytes raw)
+
+        VNull ->
+            null
+
+        VSet raw ->
+            set (List.map bytes raw)
+
+        VString raw ->
+            if String.startsWith "**REDACTED**" raw then
+                redacted raw
+            else
+                unicode raw
+
+
+
+-- Helpers
+
+
 {-| Hashes strings with the given tag
 -}
 primitive : Tag -> String -> ByteList
@@ -37,6 +96,16 @@ primitive tag input =
     input
         |> String.cons (Tag.toChar tag)
         |> Hash.sha256
+        |> Hex.toByteList
+
+
+{-| Hashes collections of bytes
+-}
+bag : Tag -> List ByteList -> ByteList
+bag tag input =
+    ([ Tag.toByte tag ] :: input)
+        |> List.concat
+        |> sha256
         |> Hex.toByteList
 
 
@@ -84,170 +153,90 @@ int input =
 {-| -}
 list : List ByteList -> ByteList
 list input =
-    let
-        tag =
-            [ 108 ]
-
-        -- Tag.toChar Tag.List |> String.fromChar |> Bytes.fromUTF8
-    in
-    (tag :: input)
-        |> List.concat
-        |> sha256
-        |> Hex.toByteList
+    bag Tag.List input
 
 
 {-| -}
-toHex : ByteList -> String
-toHex bytes =
-    Hex.fromByteList bytes
+set : List ByteList -> ByteList
+set input =
+    bag Tag.Set (List.sort input)
 
 
 {-| -}
-bytes : Value -> ByteList
-bytes value =
-    case value of
-        VBool raw ->
-            bool raw
+dict : Dict String ByteList -> ByteList
+dict input =
+    input
+        |> Dict.toList
+        |> List.map pairs
+        |> List.sort
+        |> bag Tag.Dict
 
-        VInteger raw ->
-            int raw
 
-        VList raw ->
-            list (List.map bytes raw)
+pairs : ( String, ByteList ) -> ByteList
+pairs ( key, value ) =
+    unicode key ++ value
 
-        VNull ->
-            null
 
-        VString raw ->
-            if String.startsWith "**REDACTED**" raw then
-                redacted raw
-            else
-                unicode raw
+{-| -}
+float : Float -> ByteList
+float input =
+    primitive Tag.Float (normaliseFloat input)
+
+
+normaliseFloat : Float -> String
+normaliseFloat n =
+    case n of
+        0 ->
+            "+0:"
 
         _ ->
-            null
+            let
+                ( f, e ) =
+                    ( abs n, 0 )
+                        |> exponent
+                        |> floatReduce
+
+                ( _, s ) =
+                    mantissa ( f, sign n ++ Basics.toString e ++ ":" )
+            in
+            s
 
 
+sign : Float -> String
+sign f =
+    if f < 0 then
+        "-"
+    else
+        "+"
 
---         VList xs ->
---             bytesList (Bytes.fromHex << objecthash) xs
---         VDict dict ->
---             bytesDict (Bytes.fromHex << objecthash) dict
---         VSet set ->
---             bytesSet (Bytes.fromHex << objecthash) set
--- bytesConcat : Bytes -> Bytes -> Bytes
--- bytesConcat a b =
---     Bytes.toList a
---         ++ Bytes.toList b
---         |> Bytes.fromList
---         |> Result.withDefault Bytes.empty
--- bytesString : String -> Bytes
--- bytesString s =
---     Bytes.fromUTF8 (String.cons 'u' s)
--- bytesRedacted : String -> Bytes
--- bytesRedacted s =
---     Bytes.fromHex (String.dropLeft 12 s)
--- bytesList : (a -> Bytes) -> List a -> Bytes
--- bytesList fn xs =
---     case xs of
---         [] ->
---             Bytes.fromUTF8 "l"
---         _ ->
---             let
---                 prefix =
---                     Bytes.fromUTF8 "l"
---                         |> Bytes.toList
---                 buffer =
---                     xs
---                         |> List.map (Bytes.toList << fn)
---                         |> List.concat
---             in
---             (prefix ++ buffer)
---                 |> Bytes.fromList
---                 |> Result.withDefault Bytes.empty
--- bytesSet : (a -> Bytes) -> List a -> Bytes
--- bytesSet fn xs =
---     case xs of
---         [] ->
---             Bytes.fromUTF8 "s"
---         _ ->
---             let
---                 prefix =
---                     Bytes.fromUTF8 "s"
---                         |> Bytes.toList
---                 buffer =
---                     xs
---                         |> List.map (Bytes.toList << fn)
---                         |> List.sort
---                         |> List.concat
---             in
---             (prefix ++ buffer)
---                 |> Bytes.fromList
---                 |> Result.withDefault Bytes.empty
--- bytesDict : (a -> Bytes) -> Dict String a -> Bytes
--- bytesDict fn dict =
---     let
---         prefix =
---             Bytes.fromUTF8 "d"
---                 |> Bytes.toList
---         buffer =
---             dict
---                 |> Dict.toList
---                 |> List.map
---                     (\( k, v ) ->
---                         Bytes.toList (Bytes.fromHex (hash (bytesString k)))
---                             ++ Bytes.toList (fn v)
---                     )
---                 |> List.sort
---                 |> List.concat
---     in
---     (prefix ++ buffer)
---         |> Bytes.fromList
---         |> Result.withDefault Bytes.empty
--- normaliseFloat : Float -> String
--- normaliseFloat n =
---     case n of
---         0 ->
---             "+0:"
---         _ ->
---             let
---                 ( f, e ) =
---                     ( abs n, 0 )
---                         |> exponent
---                         |> float
---                 ( _, s ) =
---                     mantissa ( f, sign n ++ Basics.toString e ++ ":" )
---             in
---             s
--- sign : Float -> String
--- sign f =
---     if f < 0 then
---         "-"
---     else
---         "+"
--- exponent : ( Float, Int ) -> ( Float, Int )
--- exponent ( f, e ) =
---     if f > 1 then
---         exponent ( f / 2, e + 1 )
---     else
---         ( f, e )
--- float : ( Float, Int ) -> ( Float, Int )
--- float ( f, e ) =
---     if f <= 0.5 then
---         float ( f * 2, e - 1 )
---     else
---         ( f, e )
--- {-| TODO: Handle errors
--- <https://github.com/benlaurie/objecthash/blob/master/go/objecthash/objecthash.go#L133>
--- -}
--- mantissa : ( Float, String ) -> ( Float, String )
--- mantissa ( f, s ) =
---     if String.length s >= 1000 then
---         ( 0, "ERROR" )
---     else if f /= 0 then
---         if f >= 1 then
---             mantissa ( (f - 1) * 2, s ++ "1" )
---         else
---             mantissa ( f * 2, s ++ "0" )
---     else
---         ( f, s )
+
+exponent : ( Float, Int ) -> ( Float, Int )
+exponent ( f, e ) =
+    if f > 1 then
+        exponent ( f / 2, e + 1 )
+    else
+        ( f, e )
+
+
+floatReduce : ( Float, Int ) -> ( Float, Int )
+floatReduce ( f, e ) =
+    if f <= 0.5 then
+        floatReduce ( f * 2, e - 1 )
+    else
+        ( f, e )
+
+
+{-| TODO: Handle errors
+<https://github.com/benlaurie/objecthash/blob/master/go/objecthash/objecthash.go#L133>
+-}
+mantissa : ( Float, String ) -> ( Float, String )
+mantissa ( f, s ) =
+    if String.length s >= 1000 then
+        ( 0, "ERROR" )
+    else if f /= 0 then
+        if f >= 1 then
+            mantissa ( (f - 1) * 2, s ++ "1" )
+        else
+            mantissa ( f * 2, s ++ "0" )
+    else
+        ( f, s )
