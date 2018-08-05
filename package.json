@@ -1,0 +1,22 @@
+{
+  "name": "elm-objecthash",
+  "version": "1.0.0",
+  "description": "Objecthash implemented in Elm",
+  "main": "index.js",
+  "repository": "https://github.com/arnau/elm-objecthash.git",
+  "author": "Arnau Siches",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "scripts": {
+    "test": "elm-test",
+    "repl": "elm-repl",
+    "reactor": "elm-reactor",
+    "add-test-deps": "elm-test --add-dependencies tests/elm-package.json && cd tests; elm-package install -y",
+    "postinstall": "elm-package install -y && elm-test --add-dependencies tests/elm-package.json && cd tests; elm-package install -y"
+  },
+  "devDependencies": {
+    "elm": "^0.18.0",
+    "elm-format": "^0.7.0-exp",
+    "elm-test": "^0.18.12"
+  }
+}
