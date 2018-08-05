@@ -1,0 +1,18 @@
+{
+    "version": "1.0.0",
+    "summary": "Objecthash in Elm",
+    "repository": "https://github.com/arnau/elm-objecthash.git",
+    "license": "BSD-3-Clause",
+    "source-directories": [
+        "src"
+    ],
+    "exposed-modules": [
+        "Objecthash",
+        "Objecthash.Value"
+    ],
+    "dependencies": {
+        "ktonon/elm-crypto": "1.1.1 <= v < 2.0.0",
+        "ktonon/elm-word": "2.1.1 <= v < 3.0.0"
+    },
+    "elm-version": "0.18.0 <= v < 0.19.0"
+}
