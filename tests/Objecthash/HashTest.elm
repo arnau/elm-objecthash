@@ -186,19 +186,3 @@ testStringDict =
     Expect.equal
         (toHex <| dict (Dict.fromList [ ( "foo", unicode "bar" ) ]))
         "7ef5237c3027d6c58100afadf37796b3d351025cf28038280147d42fdc53b960"
-
-
-
--- testItem : Expectation
--- testItem =
---     Expect.equal
---         (objecthash <|
---             VDict <|
---                 Dict.fromList
---                     [ ( "id", VString "GB" )
---                     , ( "official-name", VString "The United Kingdom of Great Britain and Northern Ireland" )
---                     , ( "name", VString "United Kingdom" )
---                     , ( "citizen-names", VSet [ VString "Briton", VString "British citizen" ] )
---                     ]
---         )
---         "45d9392ad17cead3fa46501eba3e5ac237cb46a39f1e175905f00ef6a6667257"
