@@ -30,7 +30,6 @@ import Crypton.SHA.Alg exposing (Alg(..))
 import Dict exposing (Dict)
 import Objecthash.Tag as Tag exposing (Tag)
 import Objecthash.Value exposing (Value(..))
-import Set exposing (Set)
 import Word.Hex as Hex
 
 
@@ -111,6 +110,12 @@ bag tag input =
 
 
 {-| -}
+raw : String -> ByteList
+raw input =
+    Hex.toByteList input
+
+
+{-| -}
 bool : Bool -> ByteList
 bool input =
     let
@@ -179,13 +184,13 @@ dict : Dict String ByteList -> ByteList
 dict input =
     input
         |> Dict.toList
-        |> List.map pairs
+        |> List.map pair
         |> List.sort
         |> bag Tag.Dict
 
 
-pairs : ( String, ByteList ) -> ByteList
-pairs ( key, value ) =
+pair : ( String, ByteList ) -> ByteList
+pair ( key, value ) =
     unicode key ++ value
 
 
