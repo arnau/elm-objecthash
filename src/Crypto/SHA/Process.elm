@@ -5,11 +5,9 @@
 -- according to those terms.
 --
 -- This file is a copy from https://github.com/ktonon/elm-crypto
--- It has been modified to avoid namespace collisions with the original
--- library.
 
 
-module Crypton.SHA.Process exposing (chunks)
+module Crypto.SHA.Process exposing (chunks)
 
 {-| Chunk processing.
 
@@ -19,11 +17,11 @@ module Crypton.SHA.Process exposing (chunks)
 -}
 
 import Array exposing (Array)
-import Crypton.SHA.Alg exposing (Alg(..))
-import Crypton.SHA.Chunk as Chunk exposing (Chunk)
-import Crypton.SHA.Constants exposing (initialHashValues, roundConstants)
-import Crypton.SHA.MessageSchedule as MessageSchedule exposing (MessageSchedule)
-import Crypton.SHA.Types exposing (..)
+import Crypto.SHA.Alg exposing (Alg(..))
+import Crypto.SHA.Chunk as Chunk exposing (Chunk)
+import Crypto.SHA.Constants exposing (initialHashValues, roundConstants)
+import Crypto.SHA.MessageSchedule as MessageSchedule exposing (MessageSchedule)
+import Crypto.SHA.Types exposing (..)
 import Word exposing (Word)
 
 

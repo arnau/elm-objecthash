@@ -5,11 +5,9 @@
 -- according to those terms.
 --
 -- This file is a copy from https://github.com/ktonon/elm-crypto
--- It has been modified to avoid namespace collisions with the original
--- library.
 
 
-module Crypton.SHA.Chunk
+module Crypto.SHA.Chunk
     exposing
         ( Chunk
         , next
@@ -24,7 +22,7 @@ module Crypton.SHA.Chunk
 
 -}
 
-import Crypton.SHA.Alg as Alg exposing (Alg(..))
+import Crypto.SHA.Alg as Alg exposing (Alg(..))
 import Word exposing (Word)
 
 

@@ -24,12 +24,12 @@ module Objecthash.Hash exposing (..)
 
 -}
 
-import Crypto.Hash as Hash
-import Crypton.SHA as SHA
-import Crypton.SHA.Alg exposing (Alg(..))
+import Crypto.SHA as SHA
+import Crypto.SHA.Alg exposing (Alg(..))
 import Dict exposing (Dict)
 import Objecthash.Tag as Tag exposing (Tag)
 import Objecthash.Value exposing (Value(..))
+import Word.Bytes
 import Word.Hex as Hex
 
 
@@ -95,7 +95,8 @@ primitive : Tag -> String -> ByteList
 primitive tag input =
     input
         |> String.cons (Tag.toChar tag)
-        |> Hash.sha256
+        |> Word.Bytes.fromUTF8
+        |> sha256
         |> Hex.toByteList
 
 

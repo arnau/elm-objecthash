@@ -5,14 +5,12 @@
 -- according to those terms.
 --
 -- This file is a copy from https://github.com/ktonon/elm-crypto
--- It has been modified to avoid namespace collisions with the original
--- library.
 
 
-module Crypton.SHA.Constants exposing (initialHashValues, roundConstants)
+module Crypto.SHA.Constants exposing (initialHashValues, roundConstants)
 
-import Crypton.SHA.Alg exposing (Alg(..))
-import Crypton.SHA.Types exposing (RoundConstants, WorkingVars)
+import Crypto.SHA.Alg exposing (Alg(..))
+import Crypto.SHA.Types exposing (RoundConstants, WorkingVars)
 import Word exposing (Word(..))
 
 
