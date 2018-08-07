@@ -9,7 +9,8 @@ Based on the implementation from Ben Laurie <https://github.com/benlaurie/object
 -}
 
 import Objecthash.Hash exposing (bytes, toHex)
-import Objecthash.Value exposing (Value)
+import Objecthash.Json as Json
+import Objecthash.Value exposing (Value(..))
 
 
 {-| -}

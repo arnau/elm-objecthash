@@ -11,6 +11,11 @@ Not yet published as an Elm Package.
 
 Not ready to be used.
 
+## Known issues
+
+* JSON numbers are casted as integers when there is no remainder (e.g. `"42"`
+  and `"42.0"` are `42 : Int`) when using `Json.decode`.
+
 
 ## Contribute
 
