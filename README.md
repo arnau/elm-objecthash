@@ -9,7 +9,36 @@ Not yet published as an Elm Package.
 
 ## Usage
 
-Not ready to be used.
+There are a few interfaces available.
+
+From JSON:
+
+```elm
+import Objecthash exposing (fromJson)
+
+fromJson """{"k1":"v1","k2":"v2","k3":"v3"}"""
+-- Ok "ddd65f1f7568269a30df7cafc26044537dc2f02a1a0d830da61762fc3e687057"
+```
+
+From `Objecthash.Value`:
+
+```elm
+import Objecthash exposing (objecthash)
+import Objecthash.Value exposing (Value(..))
+
+objecthash <| VSet [VInteger 1, VInteger 2]
+-- "ee104c03e5465735a9fb3fa5d0f19199297a135486fa76930c69cec825f8dac8"
+```
+
+From `Objecthash.Hash`:
+
+```elm
+import Objecthash.Hash exposing (..)
+
+toHex <| dict (Dict.fromList [ ( "foo", unicode "bar" ) ])
+-- "7ef5237c3027d6c58100afadf37796b3d351025cf28038280147d42fdc53b960"
+```
+
 
 ## Known issues
 
