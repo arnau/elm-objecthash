@@ -17,6 +17,7 @@ suite =
         , describe "integer"
             [ test "0" <| \() -> testInteger0
             , test "42" <| \() -> testInteger42
+            , test "dangerous" <| \() -> testIntDangerous
             ]
         , describe "string"
             [ test "unicode" <| \() -> testUnicode ]
@@ -37,6 +38,8 @@ suite =
         , describe "float"
             [ test "0.0" <| \() -> testFloat0
             , test "other" <| \() -> testFloats
+            , test "dangerous" <| \() -> testFloatDangerous
+            , test "special" <| \() -> testFloatSpecialValues
             ]
         ]
 
@@ -102,6 +105,17 @@ testInteger42 =
     Expect.equal (toHex (int 42)) "ebc35dc1b8e2602b72beb8d8e5bcdb2babe90f57bcb54ad7282ec798659d2196"
 
 
+testIntDangerous : Expectation
+testIntDangerous =
+    Expect.equal
+        [ toHex <| int 9007199254740992
+        , toHex <| int (9007199254740992 + 1)
+        ]
+        [ "e9fadd567195d7d1f02ce276b4758f74419cf8e135386bf7d181c44b97239c08"
+        , "e9fadd567195d7d1f02ce276b4758f74419cf8e135386bf7d181c44b97239c08"
+        ]
+
+
 
 -- Float
 
@@ -127,6 +141,30 @@ testFloats =
         [ "55ab03db6fbb5e6de473a612d7e462ca8fd2387266080980e87f021a5c7bde9f"
         , "844e08b1195a93563db4e5d4faa59759ba0e0397caf065f3b6bc0825499754e0"
         , "59b49ae24998519925833e3ff56727e5d4868aba4ecf4c53653638ebff53c366"
+        ]
+
+
+testFloatDangerous : Expectation
+testFloatDangerous =
+    Expect.equal
+        [ toHex <| float 9007199254740992
+        , toHex <| float (9007199254740992 + 1)
+        ]
+        [ "9e7d7d02dacab24905c2dc23391bd61d4081a9d541dfafd2469c881cc6c748e4"
+        , "9e7d7d02dacab24905c2dc23391bd61d4081a9d541dfafd2469c881cc6c748e4"
+        ]
+
+
+testFloatSpecialValues : Expectation
+testFloatSpecialValues =
+    Expect.equal
+        [ toHex <| float (0 / 0) -- NaN
+        , toHex <| float (1 / 0) -- Infinity
+        , toHex <| float (-1 / 0) -- -Infinity
+        ]
+        [ "5d6c301a98d835732d459d7018a8d546872f7ba3c39a45ba481746d2c6d566d9"
+        , "e0309b2362dc6aaf595338cd9e116761640f74927bcdc4f76e8e6433738f25c7"
+        , "1167518d5554ba86d9b176af0a57f29d425bedaa9847c245cc397b37533228f7"
         ]
 
 

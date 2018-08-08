@@ -198,7 +198,10 @@ pair ( key, value ) =
 {-| -}
 float : Float -> ByteList
 float input =
-    primitive Tag.Float (normaliseFloat input)
+    if isNaN input || isInfinite input then
+        primitive Tag.Float (toString input)
+    else
+        primitive Tag.Float (normaliseFloat input)
 
 
 normaliseFloat : Float -> String
