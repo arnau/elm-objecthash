@@ -42,7 +42,7 @@ decodeWith decoder input =
     decodeString decoder input
 
 
-{-| Default decoder.
+{-| Default decoder. Common JSON.
 
 TODO: Handle raw values (e.g. `VRaw`)
 
@@ -55,8 +55,9 @@ decoder =
         , bool
         , null
         , string
+
+        -- , int
         , float
-        , int
         ]
 
 

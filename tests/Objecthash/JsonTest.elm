@@ -76,10 +76,10 @@ testList : Expectation
 testList =
     Expect.equal
         [ decodeWith list """["foo"]"""
-        , decodeWith list """[42.0, "foo"]"""
+        , decodeWith list """[42.1, "foo"]"""
         ]
         [ Ok (VList [ VString "foo" ])
-        , Ok (VList [ VFloat 42.0, VString "foo" ])
+        , Ok (VList [ VFloat 42.1, VString "foo" ])
         ]
 
 
