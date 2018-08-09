@@ -1,4 +1,4 @@
-module Objecthash.Value exposing (Value(..), null, toJsonValue, toString)
+module Objecthash.Value exposing (Value(..), bool, dict, float, int, list, null, string, toJsonValue, toString)
 
 {-| Value operations.
 
@@ -6,7 +6,7 @@ module Objecthash.Value exposing (Value(..), null, toJsonValue, toString)
 
 @docs toString, toJsonValue
 
-@docs null
+@docs null, list, int, float, string, dict, bool
 
 -}
 
@@ -14,11 +14,7 @@ import Dict exposing (Dict)
 import Json.Encode as Json
 
 
-{-| Algebraic Value
-
-Note that the original objecthash implementation(s) don't have the value type
-`Timestamp`.
-
+{-| Objecthash Value.
 -}
 type Value
     = VBool Bool
