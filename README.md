@@ -3,9 +3,6 @@
 Implementation of [Ben Laurie's
 objecthash](https://github.com/benlaurie/objecthash) in Elm.
 
-## Install
-
-Not yet published as an Elm Package.
 
 ## Usage
 
