@@ -12,9 +12,7 @@ module Objecthash.Json
         , string
         )
 
-{-| Helper functions to transform JSON to the Objecthash AST.
-
-Based on the implementation from Ben Laurie <https://github.com/benlaurie/objecthash>
+{-| Helper functions to transform JSON to the Objecthash values.
 
 @docs decode, decodeWith
 
@@ -37,6 +35,8 @@ decode input =
     decodeString decoder input
 
 
+{-| Decodes a JSON string with the given decoder.
+-}
 decodeWith : Decoder Value -> String -> Result String Value
 decodeWith decoder input =
     decodeString decoder input
@@ -103,28 +103,31 @@ collectSet xs =
         )
 
 
+{-| -}
 string : Decoder Value
 string =
     Decode.map VString Decode.string
 
 
+{-| -}
 float : Decoder Value
 float =
     Decode.map VFloat Decode.float
 
 
-{-| TODO: Handle "1.0" as float
--}
+{-| -}
 int : Decoder Value
 int =
     Decode.map VInteger Decode.int
 
 
+{-| -}
 bool : Decoder Value
 bool =
     Decode.map VBool Decode.bool
 
 
+{-| -}
 null : Decoder Value
 null =
     Decode.null VNull

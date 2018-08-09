@@ -8,6 +8,8 @@
     ],
     "exposed-modules": [
         "Objecthash",
+        "Objecthash.Hash",
+        "Objecthash.Json",
         "Objecthash.Value"
     ],
     "dependencies": {

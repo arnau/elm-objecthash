@@ -1,6 +1,20 @@
-module Objecthash.Hash exposing (..)
+module Objecthash.Hash
+    exposing
+        ( ByteList
+        , bool
+        , bytes
+        , dict
+        , float
+        , int
+        , list
+        , null
+        , redacted
+        , set
+        , toHex
+        , unicode
+        )
 
-{-| Functions to operate hashes.
+{-| Functions to hash values.
 
 
 # Types
@@ -8,7 +22,7 @@ module Objecthash.Hash exposing (..)
 @docs ByteList
 
 
-# Convertors
+# Convert from and to lists of bytes.
 
 @docs bytes, toHex
 
@@ -20,7 +34,7 @@ module Objecthash.Hash exposing (..)
 
 # Collection primitives
 
-@odcs list, set, dict
+@docs list, set, dict
 
 -}
 
@@ -33,7 +47,8 @@ import Word.Bytes
 import Word.Hex as Hex
 
 
-{-| -}
+{-| A list of bytes.
+-}
 type alias ByteList =
     List Int
 
@@ -45,13 +60,21 @@ sha256 bytes =
         |> Hex.fromWordArray
 
 
-{-| -}
+{-| Transform a list of bytes into its hexadecimal string representation.
+
+    (toHex [27,22,177,223,83,139,161,45,195,249,126,219,184,92,170,112,80,212,108,20,129,52,41,15,235,168,15,130,54,200,61,185]) == "1b16b1df538ba12dc3f97edbb85caa7050d46c148134290feba80f8236c83db9"
+
+-}
 toHex : ByteList -> String
 toHex bytes =
     Hex.fromByteList bytes
 
 
-{-| -}
+{-| Hash an Objecthash Value.
+
+    bytes VNull == [27,22,177,223,83,139,161,45,195,249,126,219,184,92,170,112,80,212,108,20,129,52,41,15,235,168,15,130,54,200,61,185]
+
+-}
 bytes : Value -> ByteList
 bytes value =
     case value of
@@ -86,7 +109,7 @@ bytes value =
 
 
 
--- Helpers
+-- Primitives
 
 
 {-| Hashes strings with the given tag
@@ -110,13 +133,18 @@ bag tag input =
         |> Hex.toByteList
 
 
-{-| -}
+{-| TODO: review if it needs to be tagged with `'r'`
+-}
 raw : String -> ByteList
 raw input =
     Hex.toByteList input
 
 
-{-| -}
+{-| Hashes a boolean.
+
+    toHex (bool True) == "7dc96f776c8423e57a2785489a3f9c43fb6e756876d6ad9a9cac4aa4e72ec193"
+
+-}
 bool : Bool -> ByteList
 bool input =
     let
@@ -131,13 +159,21 @@ bool input =
     primitive Tag.Bool input_
 
 
-{-| -}
+{-| Hashes a unicode string.
+
+    toHex (unicode "foo") == "a6a6e5e783c363cd95693ec189c2682315d956869397738679b56305f2095038"
+
+-}
 unicode : String -> ByteList
 unicode input =
     primitive Tag.Unicode input
 
 
-{-| -}
+{-| Hashes a redacted stringified list of bytes.
+
+    toHex (redacted "**REDACTED**480499ec4efe0e177793c217c8227d4096d2352beee2d6816ba8f4e8a421a138") == "480499ec4efe0e177793c217c8227d4096d2352beee2d6816ba8f4e8a421a138"
+
+-}
 redacted : String -> ByteList
 redacted input =
     input
@@ -145,25 +181,48 @@ redacted input =
         |> Hex.toByteList
 
 
-{-| -}
+{-| Hashes a null value.
+
+    toHex null == "1b16b1df538ba12dc3f97edbb85caa7050d46c148134290feba80f8236c83db9"
+
+-}
 null : ByteList
 null =
     primitive Tag.Null ""
 
 
-{-| -}
+{-| Hashes an integer.
+
+    toHex (int 6) == "396ee89382efc154e95d7875976cce373a797fe93687ca8a27589116644c4bcd"
+
+-}
 int : Int -> ByteList
 int input =
     primitive Tag.Integer (toString input)
 
 
-{-| -}
+{-| Hashes a list of ByteList.
+
+    [unicode "foo", int 6]
+        |> list
+        |> toHex
+    == "28dbb78890fb7b0462c62de04bcf165c69bd65b9f992f2edd89ae7369afa7005"
+
+-}
 list : List ByteList -> ByteList
 list input =
     bag Tag.List input
 
 
-{-| -}
+{-| Hashes a set of ByteList. Note that this function receives a `List` but
+treats it as a Set (i.e. removes duplicates).
+
+    [unicode "foo", int 6]
+        |> set
+        |> toHex
+    == "cf38664185ed5377fee384d0a37bdb36681a16d72480f21336e38a493a8851b9"
+
+-}
 set : List ByteList -> ByteList
 set input =
     input
@@ -180,7 +239,14 @@ collectUnique bytes acc =
         bytes :: acc
 
 
-{-| -}
+{-| Hahes a dictionary of ByteList.
+
+    Dict.fromList [("foo", int 1)]
+        |> dict
+        |> toHex
+    == "bf4c58f5e308e31e2cd64bdbf7a01b9b595a13602438be5e912c7d94f6d8177a"
+
+-}
 dict : Dict String ByteList -> ByteList
 dict input =
     input
@@ -195,7 +261,12 @@ pair ( key, value ) =
     unicode key ++ value
 
 
-{-| -}
+{-| Hashes a float number. Note this function normalises values following the
+same algorithm implemented in the original Objecthash implementation.
+
+    toHex (float 6.1) == "43f5ebd1617989a69b819ed3a246c9e59468d6db90c29abdd3c8c1f17ffc365a"
+
+-}
 float : Float -> ByteList
 float input =
     if isNaN input || isInfinite input then
