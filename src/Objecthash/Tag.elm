@@ -12,6 +12,7 @@ type Tag
     | Null
     | Set
     | Unicode
+    | Raw
 
 
 toChar : Tag -> Char
@@ -45,3 +46,6 @@ toByte tag =
 
         Unicode ->
             0x75
+
+        Raw ->
+            0x72

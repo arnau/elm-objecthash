@@ -10,6 +10,7 @@ suite : Test
 suite =
     describe "Hash"
         [ test "null" <| \() -> testNull
+        , test "raw" <| \() -> testRaw
         , describe "bool"
             [ test "true" <| \() -> testBoolTrue
             , test "false" <| \() -> testBoolFalse
@@ -47,6 +48,13 @@ suite =
 testNull : Expectation
 testNull =
     Expect.equal (toHex null) "1b16b1df538ba12dc3f97edbb85caa7050d46c148134290feba80f8236c83db9"
+
+
+testRaw : Expectation
+testRaw =
+    Expect.equal
+        (toHex <| raw "6b18693874513ba13da54d61aafa7cad0c8f5573f3431d6f1c04b07ddb27d6bb")
+        "e318859db4d2acc89c0d503ddbcf8331625125a79018d19cf8f8d1336b7eb39e"
 
 
 

@@ -8,6 +8,8 @@ module Objecthash.Hash
         , int
         , list
         , null
+        , pair
+        , raw
         , redacted
         , set
         , toHex
@@ -29,7 +31,7 @@ module Objecthash.Hash
 
 # Primitives
 
-@docs unicode, redacted, null, int, float, bool
+@docs unicode, redacted, null, int, float, bool, raw, pair
 
 
 # Collection primitives
@@ -133,11 +135,17 @@ bag tag input =
         |> Hex.toByteList
 
 
-{-| TODO: review if it needs to be tagged with `'r'`
+{-| Hashes a raw hash.
+
+    toHex (raw "7dc96f776c8423e57a2785489a3f9c43fb6e756876d6ad9a9cac4aa4e72ec193") == "72e68c48e6e01b3d898bf9d907938459cb80d6abec2078df7f19271ff9eb19e4"
+
 -}
 raw : String -> ByteList
 raw input =
-    Hex.toByteList input
+    Tag.toByte Tag.Raw
+        :: Hex.toByteList input
+        |> sha256
+        |> Hex.toByteList
 
 
 {-| Hashes a boolean.
@@ -256,6 +264,7 @@ dict input =
         |> bag Tag.Dict
 
 
+{-| -}
 pair : ( String, ByteList ) -> ByteList
 pair ( key, value ) =
     unicode key ++ value
