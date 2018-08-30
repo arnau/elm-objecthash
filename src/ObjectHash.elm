@@ -1,4 +1,4 @@
-module Objecthash exposing (fromJson, objecthash)
+module Objecthash exposing (objecthash, fromJson)
 
 {-| Objecthash implementation.
 
@@ -8,6 +8,7 @@ Based on the implementation from Ben Laurie <https://github.com/benlaurie/object
 
 -}
 
+import Json.Decode as Decode
 import Objecthash.Hash exposing (bytes, toHex)
 import Objecthash.Json as Json
 import Objecthash.Value exposing (Value(..))
@@ -32,7 +33,7 @@ If you need more control over the JSON decoder, check the `Objecthash.Json`
 module.
 
 -}
-fromJson : String -> Result String String
+fromJson : String -> Result Decode.Error String
 fromJson input =
     input
         |> Json.decode

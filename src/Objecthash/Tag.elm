@@ -1,4 +1,4 @@
-module Objecthash.Tag exposing (..)
+module Objecthash.Tag exposing (Tag(..), toByte, toChar)
 
 import Char exposing (fromCode)
 

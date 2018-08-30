@@ -1,13 +1,4 @@
--- Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com>
---
--- Licensed under the MIT license <LICENSE or http://opensource.org/licenses/MIT>,
--- at your option. This file may not be copied, modified, or distributed except
--- according to those terms.
---
--- This file is a copy from https://github.com/ktonon/elm-crypto
-
-
-module Crypto.SHA.Alg exposing (Alg(..), wordSize)
+module Crypto.SHA.Alg exposing (Alg(..), toString, wordSize)
 
 import Word exposing (Size(..))
 
@@ -19,6 +10,28 @@ type Alg
     | SHA512
     | SHA512_224
     | SHA512_256
+
+
+toString : Alg -> String
+toString alg =
+    case alg of
+        SHA224 ->
+            "SHA224"
+
+        SHA256 ->
+            "SHA256"
+
+        SHA384 ->
+            "SHA384"
+
+        SHA512 ->
+            "SHA512"
+
+        SHA512_224 ->
+            "SHA512_224"
+
+        SHA512_256 ->
+            "SHA512_256"
 
 
 wordSize : Alg -> Size

@@ -1,12 +1,3 @@
--- Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com>
---
--- Licensed under the MIT license <LICENSE or http://opensource.org/licenses/MIT>,
--- at your option. This file may not be copied, modified, or distributed except
--- according to those terms.
---
--- This file is a copy from https://github.com/ktonon/elm-crypto
-
-
 module Crypto.SHA.Preprocess exposing (calculateK, preprocess)
 
 {-| SHA-2 preprocess.
@@ -89,12 +80,12 @@ calculateK alg l =
         c =
             Chunk.sizeInBits alg
     in
-    (c
-        - 1
-        - (8 * messageSizeBytes alg)
-        - (l % c)
-    )
-        % c
+    modBy c
+        (c
+            - 1
+            - (8 * messageSizeBytes alg)
+            - modBy c l
+        )
 
 
 messageSizeBytes : Alg -> Int

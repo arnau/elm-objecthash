@@ -1,4 +1,8 @@
-module Objecthash.Value exposing (Value(..), bool, dict, float, int, list, null, string, toJsonValue, toString)
+module Objecthash.Value exposing
+    ( Value(..)
+    , toString
+    , null, list, int, float, string, dict, bool
+    )
 
 {-| Value operations.
 
@@ -31,64 +35,58 @@ type Value
 toString : Value -> String
 toString value =
     case value of
-        VBool bool ->
-            Basics.toString bool
+        VBool inner ->
+            Debug.toString inner
 
-        VDict dict ->
-            dict
+        VDict inner ->
+            inner
                 |> Dict.toList
-                |> List.map (\( key, value ) -> ( key, toString value ))
-                |> Basics.toString
+                |> List.map (\( key, val ) -> ( key, toString val ))
+                |> Debug.toString
 
-        VFloat float ->
-            Basics.toString float
+        VFloat inner ->
+            String.fromFloat inner
 
-        VInteger int ->
-            Basics.toString int
+        VInteger inner ->
+            String.fromInt inner
 
-        VList list ->
-            Basics.toString (List.map toString list)
+        VList inner ->
+            Debug.toString (List.map toString inner)
 
         VNull ->
             ""
 
-        VSet set ->
-            Basics.toString (List.map toString set)
+        VSet inner ->
+            Debug.toString (List.map toString inner)
 
-        VString string ->
-            string
+        VString inner ->
+            inner
 
 
-{-| -}
-toJsonValue : Value -> Json.Value
-toJsonValue value =
-    case value of
-        VBool bool ->
-            Json.bool bool
 
-        VDict dict ->
-            dict
-                |> Dict.toList
-                |> List.map (\( key, value ) -> ( key, toJsonValue value ))
-                |> Json.object
-
-        VFloat float ->
-            Json.float float
-
-        VInteger int ->
-            Json.int int
-
-        VList list ->
-            Json.list (List.map toJsonValue list)
-
-        VNull ->
-            Json.null
-
-        VSet set ->
-            Json.list (List.map toJsonValue set)
-
-        VString string ->
-            Json.string string
+-- {-| TODO -}
+-- toJsonValue : Value -> Json.Value
+-- toJsonValue value =
+--     case value of
+--         VBool inner ->
+--             Json.bool inner
+--         VDict inner ->
+--             inner
+--                 |> Dict.toList
+--                 |> List.map (\( key, val ) -> ( key, toJsonValue val ))
+--                 |> Json.object
+--         VFloat inner ->
+--             Json.float inner
+--         VInteger inner ->
+--             Json.int inner
+--         VList inner ->
+--             Json.list (List.map toJsonValue inner)
+--         VNull ->
+--             Json.null
+--         VSet inner ->
+--             Json.list (List.map toJsonValue inner)
+--         VString inner ->
+--             Json.string inner
 
 
 {-| -}

@@ -1,16 +1,7 @@
-module Objecthash.Json
-    exposing
-        ( bool
-        , decode
-        , decodeWith
-        , dict
-        , float
-        , int
-        , list
-        , null
-        , set
-        , string
-        )
+module Objecthash.Json exposing
+    ( decode, decodeWith
+    , dict, list, bool, float, int, null, set, string
+    )
 
 {-| Helper functions to transform JSON to the Objecthash values.
 
@@ -30,16 +21,16 @@ import Objecthash.Value exposing (Value(..))
 {-| Expects a JSON string and returns the result of attempting to decode it
 into an AST of `Objecthash.Value`.
 -}
-decode : String -> Result String Value
+decode : String -> Result Decode.Error Value
 decode input =
     decodeString decoder input
 
 
 {-| Decodes a JSON string with the given decoder.
 -}
-decodeWith : Decoder Value -> String -> Result String Value
-decodeWith decoder input =
-    decodeString decoder input
+decodeWith : Decoder Value -> String -> Result Decode.Error Value
+decodeWith decoder_ input =
+    decodeString decoder_ input
 
 
 {-| Default decoder. Common JSON.
@@ -93,11 +84,12 @@ collectSet xs =
     VSet
         (xs
             |> List.foldr
-                (\x xs ->
-                    if List.member x xs then
-                        xs
+                (\x xs_ ->
+                    if List.member x xs_ then
+                        xs_
+
                     else
-                        x :: xs
+                        x :: xs_
                 )
                 []
         )

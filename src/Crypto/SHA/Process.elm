@@ -1,12 +1,3 @@
--- Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com>
---
--- Licensed under the MIT license <LICENSE or http://opensource.org/licenses/MIT>,
--- at your option. This file may not be copied, modified, or distributed except
--- according to those terms.
---
--- This file is a copy from https://github.com/ktonon/elm-crypto
-
-
 module Crypto.SHA.Process exposing (chunks)
 
 {-| Chunk processing.
@@ -40,11 +31,14 @@ chunks_ alg words currentHash =
             currentHash
 
         ( Just chunk, rest ) ->
-            chunk
-                |> MessageSchedule.fromChunk alg
-                |> compressLoop alg currentHash
-                |> addWorkingVars currentHash
-                |> chunks_ alg rest
+            let
+                vars =
+                    chunk
+                        |> MessageSchedule.fromChunk alg
+                        |> compressLoop alg currentHash
+                        |> addWorkingVars currentHash
+            in
+            chunks_ alg rest vars
 
 
 compressLoop : Alg -> WorkingVars -> MessageSchedule -> WorkingVars
@@ -52,7 +46,7 @@ compressLoop alg workingVars messageSchedule =
     List.foldl
         (compress alg)
         workingVars
-        (List.map2 (,) (roundConstants alg) (Array.toList messageSchedule))
+        (List.map2 (\a b -> ( a, b )) (roundConstants alg) (Array.toList messageSchedule))
 
 
 {-| for i from 0 to 63

@@ -15,8 +15,8 @@
     "postinstall": "elm-package install -y && elm-test --add-dependencies tests/elm-package.json && cd tests; elm-package install -y"
   },
   "devDependencies": {
-    "elm": "^0.18.0",
-    "elm-format": "^0.7.0-exp",
-    "elm-test": "^0.18.12"
+    "elm": "^0.19.0",
+    "elm-format": "^0.8.0",
+    "elm-test": "^0.19.0"
   }
 }

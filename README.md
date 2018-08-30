@@ -105,16 +105,27 @@ yarn test
 Note that the elm tooling is installed local to the project so as long as you
 use commands via `yarn` you should be fine.
 
+## Notice
+
+This library inlines some dependencies due to Elm's 0.19 debacle.
+
+### https://github.com/ktonon/elm-crypto
+
+Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com>
+
+Licensed under the MIT license <LICENSE or http://opensource.org/licenses/MIT>,
+at your option. This file may not be copied, modified, or distributed except
+according to those terms.
+
+### https://github.com/ktonon/elm-word
+
+Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com>
+
+Licensed under the MIT license <LICENSE or http://opensource.org/licenses/MIT>,
+at your option. This file may not be copied, modified, or distributed except
+according to those terms.
+
 
 ## License
-
-Every file inside `src/Crypto` is a copy from
-https://github.com/ktonon/elm-crypto and has the following copyright and
-license: Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com> licensed
-under MIT.
-
-
-The rest has the following copyright and
-license:
 
 Copyright (c) 2018 elm-objecthash contributors licensed under [BSD-3-clause](LICENSE).

@@ -1,4 +1,4 @@
-module Objecthash.Core exposing (..)
+module Objecthash.Core exposing (Value(..))
 
 {-| Core types.
 

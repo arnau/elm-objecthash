@@ -1,20 +1,9 @@
-module Objecthash.Hash
-    exposing
-        ( ByteList
-        , bool
-        , bytes
-        , dict
-        , float
-        , int
-        , list
-        , null
-        , pair
-        , raw
-        , redacted
-        , set
-        , toHex
-        , unicode
-        )
+module Objecthash.Hash exposing
+    ( ByteList
+    , bytes, toHex
+    , unicode, redacted, null, int, float, bool, raw, pair
+    , list, set, dict
+    )
 
 {-| Functions to hash values.
 
@@ -56,58 +45,59 @@ type alias ByteList =
 
 
 sha256 : List Int -> String
-sha256 bytes =
-    bytes
+sha256 bytes_ =
+    bytes_
         |> SHA.digest SHA256
         |> Hex.fromWordArray
 
 
 {-| Transform a list of bytes into its hexadecimal string representation.
 
-    (toHex [27,22,177,223,83,139,161,45,195,249,126,219,184,92,170,112,80,212,108,20,129,52,41,15,235,168,15,130,54,200,61,185]) == "1b16b1df538ba12dc3f97edbb85caa7050d46c148134290feba80f8236c83db9"
+    toHex [ 27, 22, 177, 223, 83, 139, 161, 45, 195, 249, 126, 219, 184, 92, 170, 112, 80, 212, 108, 20, 129, 52, 41, 15, 235, 168, 15, 130, 54, 200, 61, 185 ] == "1b16b1df538ba12dc3f97edbb85caa7050d46c148134290feba80f8236c83db9"
 
 -}
 toHex : ByteList -> String
-toHex bytes =
-    Hex.fromByteList bytes
+toHex bytes_ =
+    Hex.fromByteList bytes_
 
 
 {-| Hash an Objecthash Value.
 
-    bytes VNull == [27,22,177,223,83,139,161,45,195,249,126,219,184,92,170,112,80,212,108,20,129,52,41,15,235,168,15,130,54,200,61,185]
+    bytes VNull == [ 27, 22, 177, 223, 83, 139, 161, 45, 195, 249, 126, 219, 184, 92, 170, 112, 80, 212, 108, 20, 129, 52, 41, 15, 235, 168, 15, 130, 54, 200, 61, 185 ]
 
 -}
 bytes : Value -> ByteList
 bytes value =
     case value of
-        VBool raw ->
-            bool raw
+        VBool inner ->
+            bool inner
 
-        VDict raw ->
-            raw
+        VDict inner ->
+            inner
                 |> Dict.map (\k v -> bytes v)
                 |> dict
 
-        VFloat raw ->
-            float raw
+        VFloat inner ->
+            float inner
 
-        VInteger raw ->
-            int raw
+        VInteger inner ->
+            int inner
 
-        VList raw ->
-            list (List.map bytes raw)
+        VList inner ->
+            list (List.map bytes inner)
 
         VNull ->
             null
 
-        VSet raw ->
-            set (List.map bytes raw)
+        VSet inner ->
+            set (List.map bytes inner)
 
-        VString raw ->
-            if String.startsWith "**REDACTED**" raw then
-                redacted raw
+        VString inner ->
+            if String.startsWith "**REDACTED**" inner then
+                redacted inner
+
             else
-                unicode raw
+                unicode inner
 
 
 
@@ -206,15 +196,15 @@ null =
 -}
 int : Int -> ByteList
 int input =
-    primitive Tag.Integer (toString input)
+    primitive Tag.Integer (String.fromInt input)
 
 
 {-| Hashes a list of ByteList.
 
-    [unicode "foo", int 6]
+    [ unicode "foo", int 6 ]
         |> list
         |> toHex
-    == "28dbb78890fb7b0462c62de04bcf165c69bd65b9f992f2edd89ae7369afa7005"
+        == "28dbb78890fb7b0462c62de04bcf165c69bd65b9f992f2edd89ae7369afa7005"
 
 -}
 list : List ByteList -> ByteList
@@ -225,10 +215,10 @@ list input =
 {-| Hashes a set of ByteList. Note that this function receives a `List` but
 treats it as a Set (i.e. removes duplicates).
 
-    [unicode "foo", int 6]
+    [ unicode "foo", int 6 ]
         |> set
         |> toHex
-    == "cf38664185ed5377fee384d0a37bdb36681a16d72480f21336e38a493a8851b9"
+        == "cf38664185ed5377fee384d0a37bdb36681a16d72480f21336e38a493a8851b9"
 
 -}
 set : List ByteList -> ByteList
@@ -240,19 +230,20 @@ set input =
 
 
 collectUnique : ByteList -> List ByteList -> List ByteList
-collectUnique bytes acc =
-    if List.member bytes acc then
+collectUnique bytes_ acc =
+    if List.member bytes_ acc then
         acc
+
     else
-        bytes :: acc
+        bytes_ :: acc
 
 
 {-| Hahes a dictionary of ByteList.
 
-    Dict.fromList [("foo", int 1)]
+    Dict.fromList [ ( "foo", int 1 ) ]
         |> dict
         |> toHex
-    == "bf4c58f5e308e31e2cd64bdbf7a01b9b595a13602438be5e912c7d94f6d8177a"
+        == "bf4c58f5e308e31e2cd64bdbf7a01b9b595a13602438be5e912c7d94f6d8177a"
 
 -}
 dict : Dict String ByteList -> ByteList
@@ -279,34 +270,35 @@ same algorithm implemented in the original Objecthash implementation.
 float : Float -> ByteList
 float input =
     if isNaN input || isInfinite input then
-        primitive Tag.Float (toString input)
+        primitive Tag.Float (String.fromFloat input)
+
     else
         primitive Tag.Float (normaliseFloat input)
 
 
 normaliseFloat : Float -> String
 normaliseFloat n =
-    case n of
-        0 ->
-            "+0:"
+    if n == 0 then
+        "+0:"
 
-        _ ->
-            let
-                ( f, e ) =
-                    ( abs n, 0 )
-                        |> exponent
-                        |> floatReduce
+    else
+        let
+            ( f, e ) =
+                ( abs n, 0 )
+                    |> exponent
+                    |> floatReduce
 
-                ( _, s ) =
-                    mantissa ( f, sign n ++ Basics.toString e ++ ":" )
-            in
-            s
+            ( _, s ) =
+                mantissa ( f, sign n ++ String.fromInt e ++ ":" )
+        in
+        s
 
 
 sign : Float -> String
 sign f =
     if f < 0 then
         "-"
+
     else
         "+"
 
@@ -315,6 +307,7 @@ exponent : ( Float, Int ) -> ( Float, Int )
 exponent ( f, e ) =
     if f > 1 then
         exponent ( f / 2, e + 1 )
+
     else
         ( f, e )
 
@@ -323,6 +316,7 @@ floatReduce : ( Float, Int ) -> ( Float, Int )
 floatReduce ( f, e ) =
     if f <= 0.5 then
         floatReduce ( f * 2, e - 1 )
+
     else
         ( f, e )
 
@@ -334,10 +328,13 @@ mantissa : ( Float, String ) -> ( Float, String )
 mantissa ( f, s ) =
     if String.length s >= 1000 then
         ( 0, "ERROR" )
+
     else if f /= 0 then
         if f >= 1 then
             mantissa ( (f - 1) * 2, s ++ "1" )
+
         else
             mantissa ( f * 2, s ++ "0" )
+
     else
         ( f, s )

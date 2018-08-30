@@ -1,20 +1,10 @@
--- Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com>
---
--- Licensed under the MIT license <LICENSE or http://opensource.org/licenses/MIT>,
--- at your option. This file may not be copied, modified, or distributed except
--- according to those terms.
---
--- This file is a copy from https://github.com/ktonon/elm-crypto
-
-
-module Crypto.SHA.Chunk
-    exposing
-        ( Chunk
-        , next
-        , sizeInBits
-        , sizeInBytes
-        , sizeInWords
-        )
+module Crypto.SHA.Chunk exposing
+    ( Chunk
+    , next
+    , sizeInBits
+    , sizeInBytes
+    , sizeInWords
+    )
 
 {-|
 
@@ -41,6 +31,7 @@ next alg words =
     in
     ( if List.isEmpty chunk then
         Nothing
+
       else
         Just chunk
     , List.drop n words
