@@ -1,6 +1,6 @@
 module Objecthash.Value exposing
     ( Value(..)
-    , toString, toJsonValue
+    , toJsonValue
     , null, list, int, float, string, dict, bool
     )
 
@@ -8,7 +8,7 @@ module Objecthash.Value exposing
 
 @docs Value
 
-@docs toString, toJsonValue
+@docs toJsonValue
 
 @docs null, list, int, float, string, dict, bool
 
@@ -31,36 +31,34 @@ type Value
     | VString String
 
 
-{-| -}
-toString : Value -> String
-toString value =
-    case value of
-        VBool inner ->
-            Debug.toString inner
 
-        VDict inner ->
-            inner
-                |> Dict.toList
-                |> List.map (\( key, val ) -> ( key, toString val ))
-                |> Debug.toString
-
-        VFloat inner ->
-            String.fromFloat inner
-
-        VInteger inner ->
-            String.fromInt inner
-
-        VList inner ->
-            Debug.toString (List.map toString inner)
-
-        VNull ->
-            ""
-
-        VSet inner ->
-            Debug.toString (List.map toString inner)
-
-        VString inner ->
-            inner
+-- {-| -}
+-- toString : Value -> String
+-- toString value =
+--     case value of
+--         VBool inner ->
+--             case inner of
+--                 True ->
+--                     "true"
+--                 False ->
+--                     "false"
+--         VDict inner ->
+--             inner
+--                 |> Dict.toList
+--                 |> List.map (\( key, val ) -> ( key, toString val ))
+--                 |> Debug.toString
+--         VFloat inner ->
+--             String.fromFloat inner
+--         VInteger inner ->
+--             String.fromInt inner
+--         VList inner ->
+--             Debug.toString (List.map toString inner)
+--         VNull ->
+--             ""
+--         VSet inner ->
+--             Debug.toString (List.map toString inner)
+--         VString inner ->
+--             inner
 
 
 {-| -}

@@ -1,4 +1,4 @@
-module Objecthash.ValueTest exposing (..)
+module Objecthash.ValueTest exposing (suite, testNull)
 
 import Dict
 import Expect exposing (Expectation)
@@ -10,9 +10,10 @@ suite : Test
 suite =
     describe "Value"
         [ test "null" <| \() -> testNull
-        , describe "toString"
-            [ test "null" <| \() -> testNullToString
-            ]
+
+        -- , describe "toString"
+        --     [ test "null" <| \() -> testNullToString
+        --     ]
         ]
 
 
@@ -21,6 +22,7 @@ testNull =
     Expect.equal null VNull
 
 
-testNullToString : Expectation
-testNullToString =
-    Expect.equal (Value.toString VNull) ""
+
+-- testNullToString : Expectation
+-- testNullToString =
+--     Expect.equal (Value.toString VNull) ""
