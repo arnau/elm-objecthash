@@ -1,6 +1,6 @@
 module Objecthash.Value exposing
     ( Value(..)
-    , toString
+    , toString, toJsonValue
     , null, list, int, float, string, dict, bool
     )
 
@@ -63,30 +63,36 @@ toString value =
             inner
 
 
+{-| -}
+toJsonValue : Value -> Json.Value
+toJsonValue value =
+    case value of
+        VBool inner ->
+            Json.bool inner
 
--- {-| TODO -}
--- toJsonValue : Value -> Json.Value
--- toJsonValue value =
---     case value of
---         VBool inner ->
---             Json.bool inner
---         VDict inner ->
---             inner
---                 |> Dict.toList
---                 |> List.map (\( key, val ) -> ( key, toJsonValue val ))
---                 |> Json.object
---         VFloat inner ->
---             Json.float inner
---         VInteger inner ->
---             Json.int inner
---         VList inner ->
---             Json.list (List.map toJsonValue inner)
---         VNull ->
---             Json.null
---         VSet inner ->
---             Json.list (List.map toJsonValue inner)
---         VString inner ->
---             Json.string inner
+        VDict inner ->
+            inner
+                |> Dict.toList
+                |> List.map (\( key, val ) -> ( key, toJsonValue val ))
+                |> Json.object
+
+        VFloat inner ->
+            Json.float inner
+
+        VInteger inner ->
+            Json.int inner
+
+        VList inner ->
+            Json.list toJsonValue inner
+
+        VNull ->
+            Json.null
+
+        VSet inner ->
+            Json.list toJsonValue inner
+
+        VString inner ->
+            Json.string inner
 
 
 {-| -}
