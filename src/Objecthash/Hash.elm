@@ -2,7 +2,7 @@ module Objecthash.Hash exposing
     ( ByteList
     , bytes, toHex
     , unicode, redacted, null, int, float, bool, raw, pair
-    , list, set, dict, bag
+    , list, set, dict, bag, untagged
     )
 
 {-| Functions to hash values.
@@ -25,7 +25,7 @@ module Objecthash.Hash exposing
 
 # Collection primitives
 
-@docs list, set, dict, bag
+@docs list, set, dict, bag, untagged
 
 -}
 
@@ -120,6 +120,16 @@ primitive tag input =
 bag : Tag -> List ByteList -> ByteList
 bag tag input =
     ([ Tag.toByte tag ] :: input)
+        |> List.concat
+        |> sha256
+        |> Hex.toByteList
+
+
+{-| Hashes a raw list of bytes, untagged
+-}
+untagged : List ByteList -> ByteList
+untagged input =
+    input
         |> List.concat
         |> sha256
         |> Hex.toByteList

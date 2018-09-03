@@ -13,6 +13,7 @@ type Tag
     | Set
     | Unicode
     | Raw
+    | Custom Int
 
 
 toChar : Tag -> Char
@@ -49,3 +50,6 @@ toByte tag =
 
         Raw ->
             0x72
+
+        Custom int ->
+            int
