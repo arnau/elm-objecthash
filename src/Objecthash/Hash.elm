@@ -2,7 +2,7 @@ module Objecthash.Hash exposing
     ( ByteList
     , bytes, toHex
     , unicode, redacted, null, int, float, bool, raw, pair
-    , list, set, dict
+    , list, set, dict, bag
     )
 
 {-| Functions to hash values.
@@ -25,7 +25,7 @@ module Objecthash.Hash exposing
 
 # Collection primitives
 
-@docs list, set, dict
+@docs list, set, dict, bag
 
 -}
 
