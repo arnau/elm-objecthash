@@ -1,8 +1,26 @@
-module Objecthash.Tag exposing (Tag(..), toByte, toChar)
+module Objecthash.Tag exposing
+    ( Tag(..)
+    , toChar, toByte
+    )
+
+{-| Functions to operate Tags.
+
+
+# Types
+
+@docs Tag
+
+
+# Transformers
+
+@docs toChar, toByte
+
+-}
 
 import Char exposing (fromCode)
 
 
+{-| -}
 type Tag
     = Bool
     | Dict
@@ -16,11 +34,13 @@ type Tag
     | Custom Int
 
 
+{-| -}
 toChar : Tag -> Char
 toChar tag =
     fromCode (toByte tag)
 
 
+{-| -}
 toByte : Tag -> Int
 toByte tag =
     case tag of
