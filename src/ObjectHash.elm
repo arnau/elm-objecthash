@@ -1,4 +1,4 @@
-module Objecthash exposing (objecthash, fromJson)
+module ObjectHash exposing (objecthash, fromJson)
 
 {-| Objecthash implementation.
 
