@@ -107,17 +107,9 @@ use commands via `yarn` you should be fine.
 
 ## Notice
 
-This library inlines some dependencies due to Elm's 0.19 debacle.
-
-### https://github.com/ktonon/elm-crypto
-
-Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com>
-
-Licensed under the MIT license <LICENSE or http://opensource.org/licenses/MIT>,
-at your option. This file may not be copied, modified, or distributed except
-according to those terms.
-
-### https://github.com/ktonon/elm-word
+This library inlines [elm-crypto](https://github.com/ktonon/elm-crypto) to
+address the need for composing a sha256 hash from a list of words rather than
+from a string. This is the corresponding license:
 
 Copyright (c) 2017 Kevin Tonon <kevin@betweenconcepts.com>
 
@@ -128,4 +120,4 @@ according to those terms.
 
 ## License
 
-Copyright (c) 2018 elm-objecthash contributors licensed under [BSD-3-clause](LICENSE).
+Copyright (c) 2018-2019 elm-objecthash contributors licensed under [BSD-3-clause](LICENSE).
