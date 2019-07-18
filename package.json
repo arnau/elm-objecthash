@@ -1,6 +1,6 @@
 {
   "name": "elm-objecthash",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Objecthash implemented in Elm",
   "main": "index.js",
   "repository": "https://github.com/arnau/elm-objecthash.git",

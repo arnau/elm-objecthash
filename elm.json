@@ -3,7 +3,7 @@
     "name": "arnau/elm-objecthash",
     "summary": "Objecthash in Elm",
     "license": "BSD-3-Clause",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "exposed-modules": [
         "Objecthash",
         "Objecthash.Hash",
